@@ -22,10 +22,11 @@ public class Constants {
     public final static byte HEART_EXTRA_INFO = 1;
 
     public static boolean isHeartBeat(byte extraInfo) {
-        return (extraInfo & 32) != 0;
+        return extraInfo == 0;
     }
 
     public static boolean isRequest(byte extraInfo) {
         return (extraInfo & 1) != 1;
     }
+
 }

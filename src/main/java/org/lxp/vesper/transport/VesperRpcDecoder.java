@@ -8,7 +8,9 @@ import org.lxp.vesper.constants.Constants;
 import org.lxp.vesper.protocol.Header;
 import org.lxp.vesper.protocol.Message;
 import org.lxp.vesper.protocol.Request;
+import org.lxp.vesper.protocol.Response;
 import org.lxp.vesper.serialization.HessionSerialization;
+import org.lxp.vesper.serialization.Serialization;
 import org.lxp.vesper.serialization.SerializationFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,7 @@ public class VesperRpcDecoder extends ByteToMessageDecoder {
             log.error("decode => 非法魔数 {}", magicNum);
             throw new RuntimeException("decode => 非法魔数");
         }
+        byte version = byteBuf.readByte();
         // 附加信息 0 心跳响应
         byte extraInfo = byteBuf.readByte();
         // 消息ID
@@ -40,10 +43,11 @@ public class VesperRpcDecoder extends ByteToMessageDecoder {
         // 消息体长度
         int size = byteBuf.readInt();
 
-        Object request = null;
+        Object body = null;
         if (!Constants.isHeartBeat(extraInfo)) {
             //组装消息
             if (byteBuf.readableBytes() < size) {
+                log.warn("decode => body 信息不足, messageId:{},size:{},actual:{}", messageId, size, byteBuf.readableBytes());
                 byteBuf.resetReaderIndex();
                 return;
             }
@@ -51,11 +55,16 @@ public class VesperRpcDecoder extends ByteToMessageDecoder {
             byteBuf.readBytes(payload);
 
             //使用hessian反序列化
-            request = SerializationFactory.get(extraInfo).deSerialize(payload, Request.class);
-            log.info("decode =>requestId : {}, request:{}", messageId, JSONUtil.toJsonStr(request));
+            Serialization serialization = SerializationFactory.get(extraInfo);
+            if (Constants.isRequest(extraInfo)) {
+                body = serialization.deSerialize(payload, Request.class);
+            } else {
+                body = serialization.deSerialize(payload, Response.class);
+            }
+            log.info("decode =>requestId : {}, body:{}", messageId, JSONUtil.toJsonStr(body));
         }
         Header header = new Header(magicNum, Constants.VERSION_1, extraInfo, messageId, size);
-        Message message = new Message<>(header, request);
+        Message message = new Message<>(header, body);
         list.add(message);
     }
 }

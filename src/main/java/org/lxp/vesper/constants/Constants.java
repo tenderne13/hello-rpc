@@ -25,8 +25,15 @@ public class Constants {
         return extraInfo == 0;
     }
 
+    /**
+     * 1 req
+     * 2 resp
+     *
+     * @param extraInfo
+     * @return
+     */
     public static boolean isRequest(byte extraInfo) {
-        return (extraInfo & 1) != 1;
+        return (extraInfo) == 1;
     }
 
 }

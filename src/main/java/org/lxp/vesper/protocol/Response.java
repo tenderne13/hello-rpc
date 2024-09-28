@@ -66,4 +66,10 @@ public class Response {
      * server side threadpool exhausted and quick return.
      */
     public static final byte SERVER_THREADPOOL_EXHAUSTED_ERROR = 100;
+
+    private int code = 0; // 响应的错误码，正常响应为0，非0表示异常响应
+
+    private String errMsg; // 异常信息
+
+    private Object result;
 }

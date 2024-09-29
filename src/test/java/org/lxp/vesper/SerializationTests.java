@@ -49,10 +49,8 @@ class SerializationTests {
         connect.channel().writeAndFlush(new Message<>(requestData.header, requestData.request));
 
         log.info("send request : {}", JSONUtil.toJsonStr(requestData.request));
-        //connect.channel().closeFuture().await();
-
         log.info("end end end");
-        Thread.sleep(1000000000);
+        Thread.sleep(1000);
     }
 
     private static RequestData getReqData() throws IOException {

@@ -11,9 +11,15 @@
 	<groupId>org.lxp.vesper</groupId>
 	<artifactId>hello-rpc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>hello-rpc</name>
 	<description>Demo rpc</description>
 	<url/>
+	<modules>
+		<module>rpc-api</module>
+		<module>rpc-framework</module>
+		<module>rpc-provider</module>
+	</modules>
 	<properties>
 		<java.version>1.8</java.version>
 		<protostuff.version>1.7.4</protostuff.version>

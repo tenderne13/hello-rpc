@@ -2,6 +2,7 @@ package org.lxp.vesper.serialization;
 
 import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianOutput;
+import com.caucho.hessian.io.SerializerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

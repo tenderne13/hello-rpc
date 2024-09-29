@@ -31,6 +31,15 @@ class SerializationTests {
         String deSerializeResult = hessionSerialization.deSerialize(bytes, String.class);
         log.info("deSerialize result : {}", deSerializeResult);
     }
+    @Test
+    void serializationObjTest() throws IOException {
+        HessionSerialization hessionSerialization = new HessionSerialization();
+        RequestData requestData = getReqData();
+        byte[] bytes = hessionSerialization.serialize(requestData);
+        log.info("serialization result : {}", bytes);
+        RequestData requestDataNew = hessionSerialization.deSerialize(bytes, RequestData.class);
+        log.info("deSerialize result : {}", requestDataNew);
+    }
 
     @Test
     void vesperRpcServerTest() throws InterruptedException {
@@ -50,7 +59,7 @@ class SerializationTests {
 
         log.info("send request : {}", JSONUtil.toJsonStr(requestData.request));
         log.info("end end end");
-        Thread.sleep(1000);
+        Thread.sleep(1000000);
     }
 
     private static RequestData getReqData() throws IOException {
@@ -59,8 +68,6 @@ class SerializationTests {
         request.setMethodName("getUser");
         request.setArgTypes(new Class[]{String.class});
         request.setArgs(new Object[]{"lxp"});
-        Serialization serialization = SerializationFactory.get((byte) 1);
-        int length = serialization.serialize(request).length;
         Header header = new Header(Constants.MAGIC_NUM, Constants.VERSION_1);
         header.setExtraInfo((byte) 1);
         header.setMessageId(System.currentTimeMillis());

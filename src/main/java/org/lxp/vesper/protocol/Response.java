@@ -9,7 +9,7 @@ import java.io.Serializable;
  * rpc响应实体定义
  */
 @Data
-public class Response implements Serializable {
+public class Response {
     /**
      * ok.
      */

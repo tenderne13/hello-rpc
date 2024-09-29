@@ -27,6 +27,7 @@ public class VesperRpcServerHandler extends SimpleChannelInboundHandler<Message<
         Response response = new Response();
         response.setCode(Response.OK);
         response.setResult("呦，是你小子");
+        header.setExtraInfo((byte) 2);
         Message<Response> responseMessage = new Message<>(header, response);
         //直接回复
         ctx.writeAndFlush(responseMessage);

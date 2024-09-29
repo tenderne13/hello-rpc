@@ -1,12 +1,15 @@
 package org.lxp.vesper.protocol;
 
 import lombok.Data;
+import org.lxp.vesper.serialization.Serialization;
+
+import java.io.Serializable;
 
 /**
  * rpc响应实体定义
  */
 @Data
-public class Response {
+public class Response implements Serializable {
     /**
      * ok.
      */

@@ -1,6 +1,7 @@
 package org.lxp.vesper;
 
 import cn.hutool.json.JSONUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -34,14 +35,27 @@ class SerializationTests {
     @Test
     void vesperRpcServerTest() throws InterruptedException {
         VesperRpcServer vesperRpcServer = new VesperRpcServer(2597);
-        vesperRpcServer.start();
-        Thread.sleep(100000000);
+        Channel channel = vesperRpcServer.start();
+        channel.closeFuture().sync();
+        log.info("server closed");
+        //Thread.sleep(100000000);
     }
 
     @Test
     void vesperRpcClientTest() throws InterruptedException, IOException {
         VesperRpcClient client = new VesperRpcClient("localhost", 2597);
         ChannelFuture connect = client.connect();
+        RequestData requestData = getReqData();
+        connect.channel().writeAndFlush(new Message<>(requestData.header, requestData.request));
+
+        log.info("send request : {}", JSONUtil.toJsonStr(requestData.request));
+        //connect.channel().closeFuture().await();
+
+        log.info("end end end");
+        Thread.sleep(1000000000);
+    }
+
+    private static RequestData getReqData() throws IOException {
         Request request = new Request();
         request.setServiceName("org.lxp.vesper.service.UserService");
         request.setMethodName("getUser");
@@ -52,9 +66,17 @@ class SerializationTests {
         Header header = new Header(Constants.MAGIC_NUM, Constants.VERSION_1);
         header.setExtraInfo((byte) 1);
         header.setMessageId(System.currentTimeMillis());
-        connect.channel().writeAndFlush(new Message<>(header, request));
+        RequestData requestData = new RequestData(request, header);
+        return requestData;
+    }
 
-        log.info("send request : {}", JSONUtil.toJsonStr(request));
-        Thread.sleep(10000000);
+    private static class RequestData {
+        public final Request request;
+        public final Header header;
+
+        public RequestData(Request request, Header header) {
+            this.request = request;
+            this.header = header;
+        }
     }
 }

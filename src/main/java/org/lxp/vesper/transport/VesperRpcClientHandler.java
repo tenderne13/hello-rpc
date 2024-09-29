@@ -9,7 +9,7 @@ import org.lxp.vesper.protocol.Response;
 @Slf4j
 public class VesperRpcClientHandler extends SimpleChannelInboundHandler<Message<Response>> {
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message<Response> responseMessage) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Message<Response> responseMessage) throws Exception {
         Response content = responseMessage.getContent();
         log.info("client receive response:{}", content);
     }
